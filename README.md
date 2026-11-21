@@ -21,6 +21,8 @@ alice@paperlane.test, bob@paperlane.test, carol@paperlane.test. To review sharin
 ## Deploy
 ### Vercel + Supabase
 
+Live app: https://paperlane-hazel.vercel.app/
+
 1. Create a Supabase project and copy its PostgreSQL URI.
 2. In Vercel, import this GitHub repository.
 3. Add `DATABASE_URL` to the Vercel project environment variables.

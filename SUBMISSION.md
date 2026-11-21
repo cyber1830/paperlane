@@ -2,8 +2,8 @@
 Everything below is in the Google Drive folder, and the app is live so you can try it without installing anything.
 
  # Links
-Live app: (add the deployed URL here)
-Walkthrough video: (add the Loom or YouTube link here; the same link is in video.txt)
+Live app: https://paperlane-hazel.vercel.app/
+Walkthrough video: https://www.loom.com/share/f7a9d8e0658c490293c694f544cbfdb1
 
 # Test accounts
 
