@@ -1,6 +1,6 @@
 # Paperlane — lightweight collaborative editor
 
-React (Vite) + Express + PostgreSQL for production persistence. SQLite remains available for local development.
+React (Vite) + Express + PostgreSQL for  persistence. SQLite remains available for local development.
 
 ## Run locally (Node 18+)
 ```

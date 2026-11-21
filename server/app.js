@@ -3,11 +3,8 @@ import multer from 'multer';
 import mammoth from 'mammoth';
 import sanitizeHtml from 'sanitize-html';
 import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { createDatabase } from './database.js';
 
-const here = path.dirname(fileURLToPath(import.meta.url));
 const SAFE = {
   allowedTags: [
     'p',
@@ -78,17 +75,40 @@ export function createApp(dbPath = process.env.DB_PATH || 'data.db') {
 
   app.use(express.json({ limit: '2mb' }));
 
+  app.get('/api/health', async (_req, res) => {
+    try {
+      await store.listUsers();
+      res.json({
+        ok: true,
+        database: process.env.DATABASE_URL ? 'postgresql' : 'sqlite',
+      });
+    } catch (error) {
+      res.status(500).json({
+        ok: false,
+        error: 'Database connection failed',
+      });
+    }
+  });
+
   app.get('/api/users', async (_req, res) => {
-    res.json(await store.listUsers());
+    try {
+      res.json(await store.listUsers());
+    } catch {
+      res.status(500).json({ error: 'Database connection failed' });
+    }
   });
 
   // Mocked auth: the client sends x-user-id (seeded accounts only; see README).
   app.use('/api', async (req, res, next) => {
-    req.user = await store.getUserById(req.get('x-user-id'));
-    if (req.user) {
-      next();
-    } else {
-      res.status(401).json({ error: 'Not signed in' });
+    try {
+      req.user = await store.getUserById(req.get('x-user-id'));
+      if (req.user) {
+        next();
+      } else {
+        res.status(401).json({ error: 'Not signed in' });
+      }
+    } catch {
+      res.status(500).json({ error: 'Database connection failed' });
     }
   });
 
@@ -278,14 +298,6 @@ export function createApp(dbPath = process.env.DB_PATH || 'data.db') {
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });
   });
-
-  const dist = path.join(here, '..', 'dist');
-  if (fs.existsSync(dist)) {
-    app.use(express.static(dist));
-    app.get('*', (_req, res) => {
-      res.sendFile(path.join(dist, 'index.html'));
-    });
-  }
 
   return app;
 }

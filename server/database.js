@@ -1,5 +1,5 @@
-import Database from 'better-sqlite3';
 import pg from 'pg';
+import { createRequire } from 'module';
 
 const SEEDED_USERS = [
   ['Alice', 'alice@paperlane.test'],
@@ -230,6 +230,8 @@ export function createDatabase(dbPath = process.env.DB_PATH || 'data.db') {
     };
   }
 
+  const require = createRequire(import.meta.url);
+  const Database = require('better-sqlite3');
   const db = new Database(dbPath);
   db.exec(`
     CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL);
