@@ -19,7 +19,15 @@ alice@paperlane.test, bob@paperlane.test, carol@paperlane.test. To review sharin
 - Validation: empty titles rejected, HTML sanitized server-side, file type/size limits, 401/403/404 handling.
 
 ## Deploy
-Any Node host (Render, Railway, Fly): build `npm install && npm run build`, start `npm start`. SQLite file is `data.db` (set `DB_PATH`); use a persistent disk.
+### Render free tier
+
+The repository includes `render.yaml` for a free Render Blueprint deployment.
+
+- Build command: `npm ci && npm run build`
+- Start command: `npm start`
+- Health check: `/api/users`
+
+The free tier does not include a persistent disk. SQLite data stored in `data.db` may reset after a deploy or instance recreation. For reliable persistence, upgrade to a paid Render plan and mount a disk, or replace SQLite with an external database.
 
 ## Known limits / next steps
 Mocked auth (no passwords) · last-write-wins, no real-time sync · formatting via `execCommand` (deprecated but widely supported; I'd move to Tiptap next) · no view-only role · no version history.

@@ -41,6 +41,7 @@ Edits are last-write-wins. Presence shows who is in the document, but changes ar
 Formatting uses the browser's execCommand, which is deprecated but works everywhere.
 PDF import isn't supported, and Markdown import only handles headings, bullets and paragraphs.
 No commenting or suggestion mode.
+The free Render deployment may lose SQLite data when the instance is redeployed or recreated; paid persistent disk or an external database is required for durable production persistence.
 
 # What I'd build next with another 2-4 hours
 Move the editor to Tiptap for better formatting control and cleaner undo.
