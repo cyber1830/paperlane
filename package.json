@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "concurrently \"node server/index.js\" \"vite\"",
     "build": "vite build",
+    "vercel-build": "npm run build",
     "start": "node server/index.js",
     "test": "node --test ./test/api.test.js"
   },
