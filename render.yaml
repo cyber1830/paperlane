@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: paperlane
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/users
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DB_PATH
+        value: /var/data/paperlane.db
+    disk:
+      name: paperlane-data
+      mountPath: /var/data
+      sizeGB: 1
