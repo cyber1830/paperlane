@@ -7,5 +7,8 @@ services:
     startCommand: npm start
     healthCheckPath: /api/users
     envVars:
+      - key: DATABASE_URL
+        sync: false
+    envVars:
       - key: NODE_VERSION
         value: 20
