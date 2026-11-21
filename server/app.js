@@ -1,32 +1,57 @@
 import express from 'express';
 import multer from 'multer';
 import mammoth from 'mammoth';
-import sanitizeHtml from 'sanitize-html';
 import path from 'path';
 import { createDatabase } from './database.js';
 
-const SAFE = {
-  allowedTags: [
-    'p',
-    'h1',
-    'h2',
-    'h3',
-    'b',
-    'strong',
-    'i',
-    'em',
-    'u',
-    'ul',
-    'ol',
-    'li',
-    'br',
-    'div',
-    'span',
-  ],
-  allowedAttributes: {},
-};
+const SAFE_TAGS = new Set([
+  'p',
+  'h1',
+  'h2',
+  'h3',
+  'b',
+  'strong',
+  'i',
+  'em',
+  'u',
+  'ul',
+  'ol',
+  'li',
+  'br',
+  'div',
+  'span',
+]);
 
-const clean = (html) => sanitizeHtml(String(html ?? ''), SAFE);
+const clean = (html) => {
+  let source = String(html ?? '');
+  source = source
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<(script|style|iframe|object|embed|svg)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
+    .replace(/<(script|style|iframe|object|embed|svg)\b[^>]*\/?>/gi, '');
+
+  return source.replace(/<[^>]*>|[^<]+/g, (part) => {
+    if (!part.startsWith('<')) {
+      return escapeHtml(part);
+    }
+
+    const closing = /^<\/\s*([a-z0-9]+)\s*>$/i.exec(part);
+    if (closing) {
+      const tag = closing[1].toLowerCase();
+      return SAFE_TAGS.has(tag) ? `</${tag}>` : '';
+    }
+
+    const opening = /^<\s*([a-z0-9]+)(?:\s[^>]*)?>$/i.exec(part);
+    if (!opening) {
+      return '';
+    }
+
+    const tag = opening[1].toLowerCase();
+    if (!SAFE_TAGS.has(tag)) {
+      return '';
+    }
+    return tag === 'br' ? '<br>' : `<${tag}>`;
+  });
+};
 const escapeHtml = (text) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
